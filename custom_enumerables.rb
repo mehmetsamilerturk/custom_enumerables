@@ -1,7 +1,7 @@
 module Enumerable
   def my_each
-    each do |i|
-      yield(self[index(i)])
+    for i in self
+      yield(self[self.index(i)])
     end
   end
 end
