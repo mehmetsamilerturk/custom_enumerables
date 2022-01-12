@@ -1,7 +1,13 @@
 module Enumerable
   def my_each
     for i in self
-      yield(self[self.index(i)])
+      yield(self[index(i)])
+    end
+  end
+
+  def my_each_with_index
+    for i in self
+      yield(self[index(i)], index(i))
     end
   end
 end
@@ -17,4 +23,16 @@ def compare_each
   p "each: #{b}"
 end
 
+def compare_each_with_index
+  puts 'my_each_with_index vs. each_with_index'
+  numbers = [1, 2, 3, 4, 5]
+  a = numbers.my_each_with_index { |item, index| p "#{index} > #{item}" }
+  puts
+  b = numbers.each_with_index { |item, index| p "#{index} > #{item}" }
+
+  p "my_each_with_index: #{a}"
+  p "each_with_index: #{b}"
+end
+
 #compare_each
+compare_each_with_index
