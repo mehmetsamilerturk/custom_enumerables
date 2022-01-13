@@ -21,11 +21,17 @@ module Enumerable
 
   def my_all?
     result = false
-    my_each do |item|
-      if yield(self[index(item)])
-        result = true 
-      else
-        return result = false
+    if block_given?
+      my_each do |item|
+        if yield(self[index(item)])
+          result = true 
+        else
+          return result = false
+        end
+      end
+    else
+      my_each do |item|
+        item ? result = true : result = false
       end
     end
     result
@@ -66,13 +72,18 @@ end
 
 def compare_my_all?
   puts 'my_all? vs. all?'
-  numbers = [1, 2, 3, 4, 5]
+  numbers = [1, 2, 3, 4, 5, nil]
 
-  a = numbers.my_all? {|num| num > 0}
-  b = numbers.all? {|num| num > 0}
+  a = numbers.my_all? {|num| num > 1}
+  b = numbers.all? {|num| num > 1}
 
+  puts 'Block given'
   p "my_all?: #{a}"
   p "all?: #{b}"
+
+  puts 'Without a block'
+  p numbers.my_all?
+  p numbers.all?
 end
 
 #compare_each
