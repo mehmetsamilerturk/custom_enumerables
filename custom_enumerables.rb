@@ -18,6 +18,18 @@ module Enumerable
     end
     arr
   end
+
+  def my_all?
+    result = false
+    my_each do |item|
+      if yield(self[index(item)])
+        result = true 
+      else
+        return result = false
+      end
+    end
+    result
+  end
 end
 
 def compare_each
@@ -52,6 +64,18 @@ def compare_select
   p "select: #{b}"
 end
 
+def compare_my_all?
+  puts 'my_all? vs. all?'
+  numbers = [1, 2, 3, 4, 5]
+
+  a = numbers.my_all? {|num| num > 0}
+  b = numbers.all? {|num| num > 0}
+
+  p "my_all?: #{a}"
+  p "all?: #{b}"
+end
+
 #compare_each
 #compare_each_with_index
 #compare_select
+#compare_my_all?
