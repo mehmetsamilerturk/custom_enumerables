@@ -10,6 +10,14 @@ module Enumerable
       yield(self[index(i)], index(i))
     end
   end
+
+  def my_select
+    arr = []
+    for i in self
+      arr.push(self[index(i)]) if yield(self[index(i)])
+    end
+    arr
+  end
 end
 
 def compare_each
@@ -34,5 +42,16 @@ def compare_each_with_index
   p "each_with_index: #{b}"
 end
 
+def compare_select
+  puts 'my_select vs. select'
+  numbers = [1, 2, 3, 4, 5]
+  a = numbers.my_select {|item| item > 3}
+  b = numbers.select {|item| item > 3}
+
+  p "my_select: #{a}"
+  p "select: #{b}"
+end
+
 #compare_each
-compare_each_with_index
+#compare_each_with_index
+#compare_select
