@@ -54,6 +54,24 @@ module Enumerable
     end
     result
   end
+
+  def my_none?
+    result = true
+    if block_given?
+      my_each do |item|
+        if yield(self[index(item)])
+          return result = false
+        else
+          result = true
+        end
+      end
+    else
+      my_each do |item|
+        return result = false if item
+      end
+    end
+    result
+  end
 end
 
 def compare_each
@@ -120,8 +138,25 @@ def compare_my_any?
   p numbers.any?
 end
 
+def compare_none?
+  puts 'my_none? vs. none?'
+  numbers = [1, 2, 3, 4, 5]
+  arr = [nil, nil, false]
+  a = numbers.my_none? { |num| num > 5}
+  b = numbers.none? { |num| num > 5}
+
+  puts 'Block given'
+  p "my_none?: #{a}"
+  p "none?: #{b}"
+
+  puts 'Without a block'
+  p arr
+  p arr.my_none?
+  p arr.none?
+end
 #compare_each
 #compare_each_with_index
 #compare_select
 #compare_my_all?
 #compare_my_any?
+#compare_none?
