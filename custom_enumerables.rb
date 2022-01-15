@@ -72,6 +72,18 @@ module Enumerable
     end
     result
   end
+
+  def my_count
+    result = []
+    if block_given?
+      my_each do |item|
+        result << item if yield(self[index(item)])
+      end
+      return result.size
+    else
+      return self.size
+    end
+  end
 end
 
 def compare_each
@@ -106,7 +118,7 @@ def compare_select
   p "select: #{b}"
 end
 
-def compare_my_all?
+def compare_all?
   puts 'my_all? vs. all?'
   numbers = [1, 2, 3, 4, 5, nil]
 
@@ -122,7 +134,7 @@ def compare_my_all?
   p numbers.all?
 end
 
-def compare_my_any?
+def compare_any?
   puts 'my_any? vs. any?'
   numbers = [1, 2, 3, 4, 5, nil, false, false]
 
@@ -154,9 +166,22 @@ def compare_none?
   p arr.my_none?
   p arr.none?
 end
+
+def compare_count
+  puts 'my_count vs. count'
+  puts '___________________'
+  numbers = [1, 2, 3, 4, 5]
+  puts "#count > #{numbers.count} \n#my_count > #{numbers.my_count}"
+  puts
+  a = numbers.count {|num| num > 3}
+  b = numbers.my_count {|num| num > 3}
+  puts "#count > #{a} \n#my_count > #{b}"
+end
+
 #compare_each
 #compare_each_with_index
 #compare_select
-#compare_my_all?
-#compare_my_any?
+#compare_all?
+#compare_any?
 #compare_none?
+#compare_count
