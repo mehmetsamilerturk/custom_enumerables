@@ -1,22 +1,34 @@
 module Enumerable
   def my_each
-    for i in self
-      yield(self[index(i)])
+    if block_given?
+      for i in self
+        yield(self[index(i)])
+      end
+    else
+      return self.to_enum(:my_each)
     end
   end
 
   def my_each_with_index
-    for i in self
-      yield(self[index(i)], index(i))
+    if block_given?
+      for i in self
+        yield(self[index(i)], index(i))
+      end
+    else
+      return self.to_enum(:my_each_with_index)
     end
   end
 
   def my_select
     arr = []
-    for i in self
-      arr.push(self[index(i)]) if yield(self[index(i)])
+    if block_given?
+      for i in self
+        arr.push(self[index(i)]) if yield(self[index(i)])
+      end
+      arr
+    else
+      return self.to_enum(:my_select)
     end
-    arr
   end
 
   def my_all?
@@ -82,6 +94,18 @@ module Enumerable
       return result.size
     else
       return self.size
+    end
+  end
+
+  def my_map
+    result = []
+    if block_given?
+      my_each do |item|
+        result << yield(self[index(item)])
+      end
+      return result
+    else
+      return self.to_enum(:my_map)
     end
   end
 end
@@ -178,6 +202,14 @@ def compare_count
   puts "#count > #{a} \n#my_count > #{b}"
 end
 
+def compare_map
+  puts 'my_count vs. count'
+  puts '___________________'
+  numbers = [1, 2, 3, 4, 5]
+  puts "#map > #{numbers.map {|num| num * 2 }} \n#my_map > #{numbers.my_map {|num| num * 2 }}"
+  puts "#{numbers} unchanged"
+end 
+
 #compare_each
 #compare_each_with_index
 #compare_select
@@ -185,3 +217,4 @@ end
 #compare_any?
 #compare_none?
 #compare_count
+#compare_map
