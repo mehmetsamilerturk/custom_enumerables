@@ -108,6 +108,29 @@ module Enumerable
       return self.to_enum(:my_map)
     end
   end
+
+  def my_inject(*args)
+    unshift(args[0]) unless args.empty? || args[0].is_a?(Symbol)
+    if block_given?
+      sum = yield(self[0], self[1])
+      each do |item|
+        delete_at(1)
+        if self[1].nil?
+          return sum
+        else
+          sum = yield(sum, self[1])
+        end
+      end
+    else
+      meth = args.select {|item| item.is_a?(Symbol)}[0]
+      sum = self[0]
+
+      my_each do |item|
+        sum = sum.method(meth).(item)
+      end
+    end
+    sum
+  end
 end
 
 def compare_each
@@ -208,7 +231,23 @@ def compare_map
   numbers = [1, 2, 3, 4, 5]
   puts "#map > #{numbers.map {|num| num * 2 }} \n#my_map > #{numbers.my_map {|num| num * 2 }}"
   puts "#{numbers} unchanged"
-end 
+end
+
+def compare_inject
+  puts 'my_inject vs. inject'
+  numbers = [1, 2, 3, 4, 5]
+
+  basic_inject = numbers.inject {|a, b| a + b}
+  basic_my_inject = numbers.my_inject {|a, b| a + b}
+  puts "#my_inject > #{basic_my_inject}\n#inject > #{basic_inject}"
+  puts "#my_inject > #{[3, 6, 10, 13].inject(0, :+)}\n#inject > #{[3, 6, 10, 13].inject(0, :+)}"
+  puts '#my_inject filtering and creating a new array'
+  a = [10, 20, 30, 5, 7, 9, 3].my_inject([]) do |result, element| 
+    result << element.to_s if element > 9
+    result
+  end
+  p a
+end
 
 #compare_each
 #compare_each_with_index
@@ -218,3 +257,5 @@ end
 #compare_none?
 #compare_count
 #compare_map
+#compare_inject
+
