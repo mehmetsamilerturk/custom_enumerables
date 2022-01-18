@@ -113,7 +113,7 @@ module Enumerable
     unshift(args[0]) unless args.empty? || args[0].is_a?(Symbol)
     if block_given?
       sum = yield(self[0], self[1])
-      each do |item|
+      my_each do |item|
         delete_at(1)
         if self[1].nil?
           return sum
@@ -124,7 +124,7 @@ module Enumerable
     else
       meth = args.select {|item| item.is_a?(Symbol)}[0]
       sum = self[0]
-
+      delete_at(0)
       my_each do |item|
         sum = sum.method(meth).(item)
       end
@@ -249,6 +249,10 @@ def compare_inject
   p a
 end
 
+def multiply_els(arr)
+  arr.my_inject {|a, i| a * i }
+end
+
 #compare_each
 #compare_each_with_index
 #compare_select
@@ -258,4 +262,4 @@ end
 #compare_count
 #compare_map
 #compare_inject
-
+#p multiply_els([2, 4, 5])
