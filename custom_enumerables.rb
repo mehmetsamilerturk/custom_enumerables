@@ -1,3 +1,5 @@
+# Remove '#'s at the bottom to run the comparison scripts.
+
 module Enumerable
   def my_each
     if block_given?
@@ -97,15 +99,24 @@ module Enumerable
     end
   end
 
-  def my_map
+  def my_map(block = nil)
     result = []
-    if block_given?
-      my_each do |item|
-        result << yield(self[index(item)])
+    if block.nil?
+      if block_given?
+        puts 'in block'
+        my_each do |item|
+          result << yield(self[index(item)])
+        end
+        result
+      else
+        to_enum(:my_map)
       end
-      return result
     else
-      return self.to_enum(:my_map)
+      puts 'in proc'
+      my_each do |item|
+        result << block.call(self[index(item)])
+      end
+      result
     end
   end
 
@@ -230,7 +241,14 @@ def compare_map
   puts '___________________'
   numbers = [1, 2, 3, 4, 5]
   puts "#map > #{numbers.map {|num| num * 2 }} \n#my_map > #{numbers.my_map {|num| num * 2 }}"
+
   puts "#{numbers} unchanged"
+
+  my_proc = proc { |num| num * 3 }
+  puts 'With only proc'
+  p numbers.my_map(my_proc)
+  puts 'Proc and block chained'
+  p numbers.my_map(my_proc) {|num| num * 2}
 end
 
 def compare_inject
@@ -250,7 +268,7 @@ def compare_inject
 end
 
 def multiply_els(arr)
-  arr.my_inject {|a, i| a * i }
+  arr.my_inject(:*)
 end
 
 #compare_each
